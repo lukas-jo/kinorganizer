@@ -1,17 +1,24 @@
+mod film;
+use film::Film;
 #[macro_use] extern crate rocket;
-use letterboxd;
+use rocket_dyn_templates::Template;
 
 #[get("/")]
-async fn index() -> String {
-    let api_key_pair = letterboxd::ApiKeyPair::new("".to_string(), "".to_string());
-    let client = letterboxd::Client::new(api_key_pair);
-    let film = client.film("802113").await.unwrap();
-    let name = film.name;
-    name
-    // "Test"
+async fn index() -> Template {
+    let film = Film::from(274).await.unwrap();
+    Template::render("film", &film)
+}
+
+#[get("/<title>")]
+async fn search_film(title: String) -> Template {
+    let films = Film::search(title).await;
+    let film = films.first();
+    Template::render("film", &film)
 }
 
 #[launch]
 fn rocket() -> _ {
-    rocket::build().mount("/", routes![index])
+    rocket::build()
+        .mount("/", routes![index, search_film])
+        .attach(Template::fairing())
 }
