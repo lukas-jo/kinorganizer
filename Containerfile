@@ -1,5 +1,5 @@
 
-FROM rust:1.74 as build
+FROM rust:bookworm as build
 
 # create a new empty shell project
 RUN USER=root cargo new --bin jfk
@@ -15,16 +15,18 @@ RUN rm src/*.rs
 
 # copy your source tree
 COPY ./src ./src
+COPY ./templates ./templates
 
 # build for release
 RUN rm ./target/release/deps/jfk*
 RUN cargo build --release
 
 # our final base
-FROM debian:buster-slim
+FROM debian:bookworm-slim
 
 # copy the build artifact from the build stage
 COPY --from=build /jfk/target/release/jfk .
+COPY --from=build /jfk/templates ./templates
 
 # set the startup command to run your binary
 CMD ["./jfk"]
