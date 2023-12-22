@@ -28,5 +28,6 @@ FROM debian:bookworm-slim
 COPY --from=build /jfk/target/release/jfk .
 COPY --from=build /jfk/templates ./templates
 
+EXPOSE 8000
 # set the startup command to run your binary
 CMD ["./jfk"]
