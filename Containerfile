@@ -29,5 +29,7 @@ COPY --from=build /jfk/target/release/jfk .
 COPY --from=build /jfk/templates ./templates
 
 EXPOSE 8000
+ENV ROCKET_ADDRESS=0.0.0.0
+
 # set the startup command to run your binary
 CMD ["./jfk"]
