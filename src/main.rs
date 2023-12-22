@@ -4,7 +4,6 @@ use film::Film;
 use jfk_event::JfkEvent;
 #[macro_use] extern crate rocket;
 use rocket_dyn_templates::{ Template, context};
-use rocket::State;
 use rocket::form::Form;
 
 #[derive(FromForm)]
@@ -22,7 +21,7 @@ async fn index() -> Template {
 
 #[get("/event/<id>")]
 async fn get_event(id: u64) -> Template {
-    let film = Film::from(id).await.unwrap();
+    let film = Film::from_id(id).await.unwrap();
     Template::render("film", &film)
 }
 
@@ -33,8 +32,9 @@ async fn new_event() -> Template {
 
 #[post("/event/new", data = "<event>")]
 async fn create_event(event: Form<NewEvent<'_>>) {
-    let film = Film::from(event.film_id).await.unwrap();
+    let film = Film::from_id(event.film_id).await.unwrap();
     let text = event.text.to_string();
+    let new_jfk_event = JfkEvent::new(film, text);
 }
 
 #[launch]

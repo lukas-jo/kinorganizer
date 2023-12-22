@@ -6,3 +6,9 @@ pub struct JfkEvent {
     film: Film,
     text: String,
 }
+
+impl JfkEvent {
+    pub fn new(film: Film, text: String) -> Self {
+        Self{film, text}
+    }
+}
