@@ -1,9 +1,10 @@
-use serde::Serialize;
 use tmdb_api::movie::{MovieBase, details::MovieDetails, search::MovieSearch};
 use tmdb_api::prelude::Command;
 use tmdb_api::Client;
+use rocket::serde::{Serialize, Deserialize};
 
-#[derive(Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(crate = "rocket::serde")]
 pub struct Film {
     title: String,
     tmdb_id: u64,
