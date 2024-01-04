@@ -1,0 +1,19 @@
+{% extends "base" %}
+{% block title %}{{film.title}}{% endblock title %}
+{% block content %}
+<div class="p-4 sm:ml-64">
+  <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
+    <div class="grid grid-cols-7 gap-4 mb-4">
+      <img src="https://image.tmdb.org/t/p/w185{{film.poster_path}}">
+      <strong>{{film.title}}</strong> ({{film.year}})
+      <p>{{film.desc}}</p>
+    </div>
+    <div class="grid grid-cols-7 gap-4 mb-4">
+      <p>
+        {{event.text}}
+      </p>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

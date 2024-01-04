@@ -15,10 +15,10 @@ use rocket::{Build, Request, Rocket};
 use rocket_dyn_templates::{context, Template};
 
 use migration::MigratorTrait;
-use sea_orm::EntityTrait;
 use sea_orm::ActiveModelTrait;
+use sea_orm::ActiveValue::{NotSet, Set};
+use sea_orm::EntityTrait;
 use sea_orm_rocket::{Connection, Database};
-use sea_orm::ActiveValue::{Set, NotSet};
 
 pub use entity::event::Entity as Event;
 
@@ -37,9 +37,11 @@ async fn index(conn: Connection<'_, Db>) -> Template {
 }
 
 #[get("/event/<id>")]
-async fn get_event(id: u64) -> Template {
-    let film = Film::from_id(id).await.unwrap();
-    Template::render("film", &film)
+async fn get_event(conn: Connection<'_, Db>, id: i32) -> Template {
+    let db = conn.into_inner();
+    let event: event::Model = Event::find_by_id(id).one(db).await.unwrap().unwrap();
+    let film = Film::from_id(event.film.try_into().unwrap()).await.unwrap();
+    Template::render("event", context! {event: &event, film: &film})
 }
 
 #[get("/event/new")]
@@ -55,8 +57,8 @@ async fn create_event(conn: Connection<'_, Db>, new_event: Form<event::Model>) -
         ..Default::default()
     };
     let db = conn.into_inner();
-    new_event.insert(db).await.unwrap();
-    Redirect::to(uri!("/"))
+    let new_event = new_event.insert(db).await.unwrap();
+    Redirect::to(uri!(get_event(new_event.id)))
 }
 
 async fn run_migrations(rocket: Rocket<Build>) -> fairing::Result {
