@@ -4,9 +4,15 @@
 <div class="p-4 sm:ml-64">
    <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
       <div class="grid grid-cols-7 gap-4 mb-4">
-        {% for film in films %}
-        <img class="flex rounded-lg" src="https://image.tmdb.org/t/p/w185{{film.poster_path}}">
-        {% endfor %}
+        <form action="" method="post">
+          <label for="film">
+            TMDB ID: <input type="tel" id="film" name="film" />
+          </label>
+          <label for="text">
+            Beschreibung: <textarea id="text" name="text" cols="50" rows="20"></textarea>
+          </label>
+          <button type="submit">Erstellen</button>
+        </form>
       </div>
    </div>
 </div>

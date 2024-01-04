@@ -18,15 +18,23 @@ impl MigrationTrait for Migration {
                             .auto_increment()
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Event::Film).integer().not_null())
+                    .col(ColumnDef::new(Event::Film).big_unsigned().not_null())
                     .col(ColumnDef::new(Event::Text).string().not_null())
                     .to_owned(),
             )
-            .await
+            .await?;
+
+        let insert = Query::insert()
+            .into_table(Event::Table)
+            .columns([Event::Film, Event::Text])
+            .values_panic([181886.into(), "Enemy".into()])
+            .values_panic([115.into(), "Big Lebowski".into()])
+            .to_owned();
+        manager.exec_stmt(insert).await?;
+        Ok(())
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-
         manager
             .drop_table(Table::drop().table(Event::Table).to_owned())
             .await
@@ -40,4 +48,3 @@ enum Event {
     Film,
     Text,
 }
-

@@ -2,31 +2,37 @@
 extern crate rocket;
 
 mod film;
+use entity::event;
 use film::Film;
 
 mod db;
 use db::Db;
 
-use rocket_dyn_templates::{ Template, context};
 use rocket::fairing::{self, AdHoc};
 use rocket::form::{Context, Form};
+use rocket::response::Redirect;
 use rocket::{Build, Request, Rocket};
+use rocket_dyn_templates::{context, Template};
 
 use migration::MigratorTrait;
+use sea_orm::EntityTrait;
+use sea_orm::ActiveModelTrait;
 use sea_orm_rocket::{Connection, Database};
+use sea_orm::ActiveValue::{Set, NotSet};
 
 pub use entity::event::Entity as Event;
 
-#[derive(FromForm)]
-struct NewEvent<'r> {
-    film_id: u64,
-    r#text: &'r str,
-}
-
 #[get("/")]
-async fn index() -> Template {
-    let title = String::from("Enemy");
-    let films = Film::search(title).await;
+async fn index(conn: Connection<'_, Db>) -> Template {
+    let db = conn.into_inner();
+    let events: Vec<event::Model> = Event::find().all(db).await.unwrap();
+    // TODO: async functional programming?
+    let mut films: Vec<Film> = Vec::new();
+    for event in events {
+        let film_id: u64 = event.film.try_into().unwrap();
+        let film = Film::from_id(film_id).await.unwrap();
+        films.push(film);
+    }
     Template::render("index", context! {films: &films})
 }
 
@@ -41,10 +47,16 @@ async fn new_event() -> Template {
     Template::render("new_event", context! {})
 }
 
-#[post("/event/new", data = "<event>")]
-async fn create_event(event: Form<NewEvent<'_>>) {
-    let film = Film::from_id(event.film_id).await.unwrap();
-    let text = event.text.to_string();
+#[post("/event/new", data = "<new_event>")]
+async fn create_event(conn: Connection<'_, Db>, new_event: Form<event::Model>) -> Redirect {
+    let new_event = event::ActiveModel {
+        film: Set(new_event.film),
+        text: Set(new_event.text.to_owned()),
+        ..Default::default()
+    };
+    let db = conn.into_inner();
+    new_event.insert(db).await.unwrap();
+    Redirect::to(uri!("/"))
 }
 
 async fn run_migrations(rocket: Rocket<Build>) -> fairing::Result {

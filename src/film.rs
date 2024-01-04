@@ -1,7 +1,7 @@
-use tmdb_api::movie::{MovieBase, details::MovieDetails, search::MovieSearch};
+use rocket::serde::{Deserialize, Serialize};
+use tmdb_api::movie::{details::MovieDetails, search::MovieSearch, MovieBase};
 use tmdb_api::prelude::Command;
 use tmdb_api::Client;
-use rocket::serde::{Serialize, Deserialize};
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(crate = "rocket::serde")]
