@@ -1,2 +1,2 @@
-[default.databases.jfk]
-url = "jfk.sqlite"
+[default.databases.sea_orm]
+url = "sqlite://jfk.sqlite?mode=rwc"

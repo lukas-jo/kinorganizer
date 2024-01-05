@@ -64,7 +64,7 @@ async fn create_event(tmdb: &State<TmdbClient>, conn: Connection<'_, Db>, new_ev
         ..Default::default()
     };
     let db = conn.into_inner();
-    new_film.insert(db).await;
+    let _ = new_film.insert(db).await;
     let new_event = new_event.insert(db).await.unwrap();
     Redirect::to(uri!(get_event(new_event.id)))
 }
