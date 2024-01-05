@@ -2,27 +2,23 @@
 extern crate rocket;
 
 mod tmdb;
-use sea_orm::ModelTrait;
 use tmdb::TmdbClient;
 mod entity;
-use entity::event;
-use entity::film;
+use entity::{event, film};
 
 mod db;
 use db::Db;
 
 use rocket::fairing::{self, AdHoc};
 use rocket::form::Form;
-use rocket::State;
 use rocket::response::Redirect;
-use rocket::{Build, Rocket};
+use rocket::{Build, Rocket, State};
 use rocket_dyn_templates::{context, Template};
 
 mod migration;
 use migration::MigratorTrait;
-use sea_orm::ActiveModelTrait;
 use sea_orm::ActiveValue::Set;
-use sea_orm::EntityTrait;
+use sea_orm::{ActiveModelTrait, EntityTrait, ModelTrait};
 use sea_orm_rocket::{Connection, Database};
 
 pub use entity::event::Entity as Event;
@@ -56,7 +52,11 @@ async fn new_event() -> Template {
 }
 
 #[post("/event/new", data = "<new_event>")]
-async fn create_event(tmdb: &State<TmdbClient>, conn: Connection<'_, Db>, new_event: Form<event::Model>) -> Redirect {
+async fn create_event(
+    tmdb: &State<TmdbClient>,
+    conn: Connection<'_, Db>,
+    new_event: Form<event::Model>,
+) -> Redirect {
     let new_film = tmdb.from_id(new_event.tmdb_id).await.unwrap();
     let new_event = event::ActiveModel {
         tmdb_id: Set(new_event.tmdb_id),
