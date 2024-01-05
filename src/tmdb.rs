@@ -1,47 +1,46 @@
-use rocket::serde::{Deserialize, Serialize};
+use sea_orm::TryIntoModel;
+use tmdb_api::error::Error as TmdbError;
 use tmdb_api::movie::{details::MovieDetails, search::MovieSearch, MovieBase};
 use tmdb_api::prelude::Command;
 use tmdb_api::Client;
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
-#[serde(crate = "rocket::serde")]
-pub struct Film {
-    title: String,
-    tmdb_id: u64,
-    year: String,
-    desc: String,
-    poster_path: String,
+use super::film;
+use sea_orm::ActiveValue::Set;
+
+pub struct TmdbClient {
+    client: Client,
 }
 
-impl Film {
-    fn from_tmdb(movie: MovieBase) -> Self {
+impl TmdbClient {
+    pub fn new(token: String) -> Self {
         Self {
-            title: movie.title,
-            tmdb_id: movie.id,
-            year: movie.release_date.unwrap().to_string(),
-            desc: movie.overview,
-            poster_path: movie.poster_path.unwrap(),
+            client: Client::new(token),
         }
     }
 
-    pub async fn from_id(id: u64) -> Result<Self, String> {
-        let secret = std::env::var("TMDB_TOKEN_V3").unwrap();
-        let client = Client::new(secret);
-        let film = MovieDetails::new(id).execute(&client).await.unwrap();
-
-        Ok(Self::from_tmdb(film.inner))
+    fn to_entity(&self, movie: MovieBase) -> film::ActiveModel {
+        super::film::ActiveModel {
+            title: Set(movie.title),
+            tmdb_id: Set(movie.id.try_into().unwrap()),
+            year: Set(movie.release_date.unwrap().to_string()),
+            desc: Set(movie.overview),
+            poster_path: Set(movie.poster_path.unwrap()),
+        }
     }
 
-    pub async fn search(title: String) -> Vec<Self> {
-        let secret = std::env::var("TMDB_TOKEN_V3").unwrap();
-        let client = Client::new(secret);
+    pub async fn from_id(&self, id: i64) -> Result<film::ActiveModel, TmdbError> {
+        let film = MovieDetails::new(id.try_into().unwrap()).execute(&self.client).await?;
+        Ok(self.to_entity(film.inner))
+    }
+
+    pub async fn search(&self, title: String) -> Result<Vec<film::Model>, TmdbError> {
         let search = MovieSearch::new(title);
-        let result = search.execute(&client).await.unwrap();
-        result
+        let result = search.execute(&self.client).await?;
+        Ok(result
             .results
             .iter()
             .map(|f| f.inner.clone())
-            .map(Self::from_tmdb)
-            .collect()
+            .map(|f| self.to_entity(f).try_into_model().unwrap())
+            .collect())
     }
 }
