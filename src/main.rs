@@ -2,21 +2,23 @@
 extern crate rocket;
 
 mod film;
-use entity::event;
 use film::Film;
+mod entity;
+use entity::event;
 
 mod db;
 use db::Db;
 
 use rocket::fairing::{self, AdHoc};
-use rocket::form::{Context, Form};
+use rocket::form::Form;
 use rocket::response::Redirect;
-use rocket::{Build, Request, Rocket};
+use rocket::{Build, Rocket};
 use rocket_dyn_templates::{context, Template};
 
+mod migration;
 use migration::MigratorTrait;
 use sea_orm::ActiveModelTrait;
-use sea_orm::ActiveValue::{NotSet, Set};
+use sea_orm::ActiveValue::Set;
 use sea_orm::EntityTrait;
 use sea_orm_rocket::{Connection, Database};
 
