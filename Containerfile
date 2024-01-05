@@ -16,6 +16,7 @@ RUN rm src/*.rs
 # copy your source tree
 COPY ./src ./src
 COPY ./templates ./templates
+COPY ./Rocket.toml ./Rocket.toml
 
 # build for release
 RUN rm ./target/release/deps/jfk*
@@ -27,6 +28,7 @@ FROM debian:bookworm-slim
 # copy the build artifact from the build stage
 COPY --from=build /jfk/target/release/jfk .
 COPY --from=build /jfk/templates ./templates
+COPY --from=build /jfk/Rocket.toml .
 
 EXPOSE 8000
 ENV ROCKET_ADDRESS=0.0.0.0
