@@ -30,6 +30,7 @@ COPY --from=build /jfk/templates ./templates
 
 EXPOSE 8000
 ENV ROCKET_ADDRESS=0.0.0.0
+ENV DATABASE_URL=sqlite://jfk.sqlite?mode=rwc
 
 # set the startup command to run your binary
 CMD ["./jfk"]
