@@ -1,8 +1,8 @@
 #[macro_use]
 extern crate rocket;
 
-mod film;
-use film::Film;
+mod tmdb;
+use tmdb::Film;
 mod entity;
 use entity::event;
 
