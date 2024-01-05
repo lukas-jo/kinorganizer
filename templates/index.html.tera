@@ -4,8 +4,10 @@
 <div class="p-4 sm:ml-64">
    <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
       <div class="grid grid-cols-7 gap-4 mb-4">
-        {% for film in films %}
-        <img class="flex rounded-lg" src="https://image.tmdb.org/t/p/w185{{film.poster_path}}">
+        {% for filmevent in filmevents %}
+        <a href="/event/{{filmevent.event.id}}">
+          <img class="flex rounded-lg" src="https://image.tmdb.org/t/p/w185{{filmevent.film.poster_path}}">
+        </a>
         {% endfor %}
       </div>
    </div>

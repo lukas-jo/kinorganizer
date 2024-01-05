@@ -14,27 +14,37 @@ use rocket::form::Form;
 use rocket::response::Redirect;
 use rocket::{Build, Rocket, State};
 use rocket_dyn_templates::{context, Template};
+use rocket::serde::{Deserialize, Serialize};
 
 mod migration;
 use migration::MigratorTrait;
 use sea_orm::ActiveValue::Set;
-use sea_orm::{ActiveModelTrait, EntityTrait, ModelTrait};
+use sea_orm::{ActiveModelTrait, EntityTrait, ModelTrait, FromQueryResult};
 use sea_orm_rocket::{Connection, Database};
 
 pub use entity::event::Entity as Event;
 pub use entity::film::Entity as Film;
 
+// TODO: use FromQueryResult
+#[derive(Serialize, Deserialize)]
+struct FilmEvent {
+    event: event::Model,
+    film : film::Model,
+}
+
 #[get("/")]
 async fn index(conn: Connection<'_, Db>) -> Template {
     let db = conn.into_inner();
     let events: Vec<event::Model> = Event::find().all(db).await.unwrap();
-    let mut films: Vec<film::Model> = Vec::new();
+    let mut films: Vec<FilmEvent> = Vec::new();
     for event in events {
         // TODO: replace with Option::inspect() when stable
+        // TODO: use custom join statement instead?
         // TODO: why double unwrap?
-        films.push(event.find_related(Film).one(db).await.unwrap().unwrap());
+        let film = event.find_related(Film).one(db).await.unwrap().unwrap();
+        films.push(FilmEvent { event, film });
     }
-    Template::render("index", context! {films: &films})
+    Template::render("index", context! {filmevents: &films})
 }
 
 #[get("/event/<id>")]
