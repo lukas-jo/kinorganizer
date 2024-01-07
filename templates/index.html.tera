@@ -1,16 +1,27 @@
 {% extends "base" %}
-{% block title %}Startseit{% endblock title %}
+{% block title %}Startseite{% endblock title %}
 {% block content %}
-<div class="p-4 sm:ml-64">
+<div class="p-4 grid grid-rows-5">
    <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
-      <div class="grid grid-cols-7 gap-4 mb-4">
-        {% for filmevent in filmevents %}
+    <h1>Beigetretene Events</h1>
+    <div class="grid grid-cols-7 gap-4 mb-4">
+      {% for filmevent in filmevents %}
         <a href="/event/{{filmevent.event.id}}">
           <img class="flex rounded-lg" src="https://image.tmdb.org/t/p/w185{{filmevent.film.poster_path}}">
         </a>
-        {% endfor %}
-      </div>
-   </div>
-   <a href="/event/new">Neues Event</a>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
+    <h1>Anstehende Events</h1>
+    <div class="grid grid-cols-7 gap-4 mb-4">
+      {% for filmevent in filmevents %}
+        <a href="/event/{{filmevent.event.id}}">
+          <img class="flex rounded-lg" src="https://image.tmdb.org/t/p/w185{{filmevent.film.poster_path}}">
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+  <a href="/event/new">Neues Event</a>
 </div>
 {% endblock content %}

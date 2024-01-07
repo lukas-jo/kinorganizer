@@ -11,10 +11,11 @@ use db::Db;
 
 use rocket::fairing::{self, AdHoc};
 use rocket::form::Form;
+use rocket::fs::{ FileServer, relative};
 use rocket::response::Redirect;
 use rocket::{Build, Rocket, State};
 use rocket_dyn_templates::{context, Template};
-use rocket::serde::{Deserialize, Serialize};
+use rocket::serde::{Deserialize, Serialize, json::Json};
 
 mod migration;
 use migration::MigratorTrait;
@@ -79,6 +80,12 @@ async fn create_event(
     Redirect::to(uri!(get_event(new_event.id)))
 }
 
+#[get("/search-tmdb/<title>")]
+async fn search_tmdb(tmdb: &State<TmdbClient>, title: String) -> Json<Vec<film::Model>> {
+    let films = tmdb.search(title).await.unwrap();
+    Json(films)
+}
+
 async fn run_migrations(rocket: Rocket<Build>) -> fairing::Result {
     let conn = &Db::fetch(&rocket).unwrap().conn;
     let _ = migration::Migrator::up(conn, None).await;
@@ -92,5 +99,7 @@ async fn rocket() -> _ {
         .attach(AdHoc::try_on_ignite("Migrations", run_migrations))
         .manage(TmdbClient::new(std::env::var("TMDB_TOKEN_V3").unwrap()))
         .mount("/", routes![index, get_event, new_event, create_event])
+        .mount("/api", routes![search_tmdb])
+        .mount("/static", FileServer::from(relative!("static")))
         .attach(Template::fairing())
 }
