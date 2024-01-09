@@ -15,7 +15,7 @@
 - /event/new
   - [x] Create new event
   - [ ] Rich Text Editor
-  - [x] TMDB Movie Picker (side js)
+  - [x] TMDB Movie Picker (client side js)
 - /monthly
   - [ ] automatic generation of monthly preview
 
@@ -23,7 +23,7 @@
 
 - Calendar: Upcoming Releases, Events, etc.
   - .ics generation and subscribable calendar
-- Authentication: Memeberaccount, Admin/Mod/Member Roles, etc.
+- Auth: Memberaccounts, Admin/Mod/Member Roles, etc.
 - Custom Events: Luxusburger, Adventskalender, Sommertreffen, etc.
 - Letterboxd Integration: see below
 
