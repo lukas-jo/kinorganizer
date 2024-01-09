@@ -3,19 +3,19 @@
 ## MVP Roadmap
 
 - /
-  - [ ] Overview of upcoming events
+  - [x] Overview of upcoming events
 - /event/<id>
-  - [ ] Film Info
-  - [ ] Rich Text from Joris
+  - [x] Film Info
+  - [x] Rich Text from Joris
   - [ ] Available Cinemas and show times
   - [ ] join event
   - [ ] set event date and location
   - [ ] mark event as held
 - /event/<id>/edit
 - /event/new
-  - [ ] Create new event
+  - [x] Create new event
   - [ ] Rich Text Editor
-  - [ ] TMDB Movie Picker (needs client side js?)
+  - [x] TMDB Movie Picker (side js)
 - /monthly
   - [ ] automatic generation of monthly preview
 
