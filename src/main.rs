@@ -80,8 +80,8 @@ async fn create_event(
     Redirect::to(uri!(get_event(new_event.id)))
 }
 
-#[get("/search/<title>")]
-async fn search_tmdb(tmdb: &State<TmdbClient>, title: String) -> Template {
+#[post("/search", data = "<title>")]
+async fn search_tmdb(tmdb: &State<TmdbClient>, title: &str) -> Template {
     let mut films = tmdb.search(title).await.unwrap();
     films.truncate(5);
     Template::render("tmdb_search_results", context! { films })

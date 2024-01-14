@@ -9,7 +9,7 @@ selectedFilm.addEventListener("click", removeFilmId);
 function listSearchResult(event) {
   const query = event.currentTarget.value;
   if (query.length >= 3) {
-    fetch(`/api/search/${query}`)
+    fetch("/api/search", {method: "POST", body: query})
       .then((res) => res.text())
       .then((html) => {
         // filmList.setHTML(html);

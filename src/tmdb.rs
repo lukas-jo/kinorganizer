@@ -21,10 +21,10 @@ impl TmdbClient {
     fn to_entity(&self, movie: MovieBase) -> film::ActiveModel {
         super::film::ActiveModel {
             title: Set(movie.title),
-            tmdb_id: Set(movie.id.try_into().unwrap()),
-            year: Set(movie.release_date.unwrap().to_string()),
+            tmdb_id: Set(movie.id.try_into().unwrap_or_default()),
+            year: Set(movie.release_date.unwrap_or_default().to_string()),
             desc: Set(movie.overview),
-            poster_path: Set(movie.poster_path.unwrap()),
+            poster_path: Set(movie.poster_path.unwrap_or_default()),
         }
     }
 
@@ -33,8 +33,8 @@ impl TmdbClient {
         Ok(self.to_entity(film.inner))
     }
 
-    pub async fn search(&self, title: String) -> Result<Vec<film::Model>, TmdbError> {
-        let search = MovieSearch::new(title);
+    pub async fn search(&self, title: &str) -> Result<Vec<film::Model>, TmdbError> {
+        let search = MovieSearch::new(String::from(title));
         let result = search.execute(&self.client).await?;
         Ok(result
             .results
