@@ -1,38 +1,27 @@
-
-FROM rust:bookworm as build
-
-# create a new empty shell project
-RUN USER=root cargo new --bin jfk
-WORKDIR /jfk
-
-# copy over your manifests
+FROM --platform=$BUILDPLATFORM rust:1.75.0-alpine3.19 as build
+WORKDIR /app
+RUN USER=root cargo init --bin --name jfk
+RUN apk update
+RUN apk add --no-cache musl-dev pkgconfig jq
+ARG TARGETPLATFORM
 COPY ./Cargo.lock ./Cargo.lock
 COPY ./Cargo.toml ./Cargo.toml
-
-# this build step will cache your dependencies
-RUN cargo build --release
+RUN cargo build --release --locked
 RUN rm src/*.rs
-
-# copy your source tree
-COPY ./src ./src
-COPY ./templates ./templates
-COPY ./Rocket.toml ./Rocket.toml
-
-# build for release
 RUN rm ./target/release/deps/jfk*
-RUN cargo build --release
+COPY . .
+RUN cargo build --release --locked
+RUN wget -O tailwindcss https://github.com/tailwindlabs/tailwindcss/releases/download/$(wget -q -O - https://api.github.com/repos/tailwindlabs/tailwindcss/releases/latest | jq -r ".tag_name")/tailwindcss-$(echo $TARGETPLATFORM|sed 's/linux\//linux-/'|sed 's/arm\/v[-,7,6]/armv7/'|sed 's/amd64/x64/') \
+    && chmod u+x tailwindcss
+RUN ./tailwindcss -i ./static/css/app.css -o ./static/css/style.css --minify
 
-# our final base
-FROM debian:bookworm-slim
-
-# copy the build artifact from the build stage
-COPY --from=build /jfk/target/release/jfk .
-COPY --from=build /jfk/templates ./templates
-COPY --from=build /jfk/Rocket.toml .
-
+FROM scratch
+WORKDIR /app
+COPY ./Rocket.toml .
+COPY ./templates ./templates
+COPY --from=build /app/target/release/jfk .
+COPY --from=build /app/static ./static
 EXPOSE 8000
 ENV ROCKET_ADDRESS=0.0.0.0
 ENV DATABASE_URL=sqlite://jfk.sqlite?mode=rwc
-
-# set the startup command to run your binary
 CMD ["./jfk"]

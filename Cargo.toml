@@ -10,9 +10,9 @@ rocket = {version = "0.5.0", features = ["json"]}
 rocket_dyn_templates = { version = "0.1.0", features = ["tera"] }
 # rocket_db_pools = {version = "0.1.0", features = ["sqlx_sqlite"]}
 sqlx = {version="0.7", default_features=false, features = ["macros", "migrate"]}
-sea-orm = { version = "^0.12.0", features = [ "sqlx-sqlite", "runtime-tokio-native-tls", "macros" ] }
+sea-orm = { version = "^0.12.0", features = [ "sqlx-sqlite", "runtime-tokio-rustls", "macros" ] }
 sea-orm-rocket = "0.5"
-sea-orm-migration = { version = "0.12", features = [ "runtime-tokio-native-tls", "sqlx-sqlite"]}
+sea-orm-migration = { version = "0.12", features = [ "runtime-tokio-rustls", "sqlx-sqlite"]}
 # letterboxd = "0.3.1"
 serde = {version = "1.0", features = ["derive"]}
 tmdb-api = "0.5.2"
