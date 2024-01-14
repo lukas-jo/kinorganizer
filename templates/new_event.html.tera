@@ -9,17 +9,17 @@
       <p class="mb-4 text-gray-600">Erstelle ein neues JFK-Event.</p>
       
       <div class="sm:col-span-4">
-        <label for="filmSearchBar" class="block text-sm font-medium text-gray-900">Film</label>
+        <label for="film-search" class="block text-sm font-medium text-gray-900">Film</label>
         <div class="mt-2">
-          <input id="filmSearchBar" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-          <input class="hidden" id="tmdb_id" name="tmdb_id">
+          <input id="film-search" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+          <input class="hidden" id="tmdb-id" name="tmdb_id">
         </div>
       </div>
 
-      <div id="selectedFilm" class="flex items-center gap-x-6" onclick="removeFilmId()">
+      <div id="selected-film" class="flex items-center gap-x-6">
       </div>
 
-      <ul id="filmList" class="flex flex-col">
+      <ul id="search-results" class="flex flex-col">
       </ul>
 
       <div class="col-span-full">

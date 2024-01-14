@@ -80,10 +80,11 @@ async fn create_event(
     Redirect::to(uri!(get_event(new_event.id)))
 }
 
-#[get("/search-tmdb/<title>")]
-async fn search_tmdb(tmdb: &State<TmdbClient>, title: String) -> Json<Vec<film::Model>> {
-    let films = tmdb.search(title).await.unwrap();
-    Json(films)
+#[get("/search/<title>")]
+async fn search_tmdb(tmdb: &State<TmdbClient>, title: String) -> Template {
+    let mut films = tmdb.search(title).await.unwrap();
+    films.truncate(5);
+    Template::render("tmdb_search_results", context! { films })
 }
 
 async fn run_migrations(rocket: Rocket<Build>) -> fairing::Result {
