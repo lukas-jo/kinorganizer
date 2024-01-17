@@ -8,37 +8,43 @@
     <link href="/static/css/style.css" rel="stylesheet">
   </head>
 
-  <body>
+  <body class="font-display text-base-black dark:text-base-200">
     <nav class="fixed top-0 left-0 z-40 w-64 h-screen" aria-label="Sidebar">
-      <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+      <div class="h-full px-3 py-4 overflow-y-auto bg-base-50 dark:bg-base-900">
         <menu class="space-y-2 font-medium">
           <li>
-            <a href="/" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+            <a href="/" class="flex items-center p-2 rounded-lg hover:bg-base-150 dark:hover:bg-base-850">
               <span class="flex-1 ms-3 whitespace-nowrap">Startseite</span>
             </a>
           </li>
           <li>
-            <a href="/monthly" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+            <a href="/monthly" class="flex items-center p-2 rounded-lg hover:bg-base-150 dark:hover:bg-base-850">
               <span class="flex-1 ms-3 whitespace-nowrap">Monatsvorschau</span>
             </a>
           </li>
           <li>
-            <a href="/calendar" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+            <a href="/calendar" class="flex items-center p-2 rounded-lg hover:bg-base-150 dark:hover:bg-base-850">
               <span class="flex-1 ms-3 whitespace-nowrap">Kalendar</span>
             </a>
           </li>
           <li>
-            <a href="/members" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+            <a href="/members" class="flex items-center p-2 rounded-lg hover:bg-base-150 dark:hover:bg-base-850">
               <span class="flex-1 ms-3 whitespace-nowrap">Mitglieder</span>
             </a>
           </li>
         </menu>
+        <label for="colorscheme">Theme:</label>
+        <select class="appearance-none" name="colorscheme" id="colorscheme">
+          <option value="">Standart</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
       </div>
     </nav>
 
-    <main class="ml-64">
+    <main class="ml-64 bg-base-paper dark:bg-base-black h-screen">
       {% block content %}{% endblock content %}
     </main>
-    <script src="/static/js/script.js"></script>
+    <script src="/static/js/darkmode.js"></script>
   </body>
 </html>

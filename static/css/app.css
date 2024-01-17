@@ -1,3 +1,39 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  src:
+    url("/static/font/Atkinson-Hyperlegible-Regular-102a.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  src:
+    url("/static/font/Atkinson-Hyperlegible-Italic-102a.woff2") format("woff2");
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  src:
+    url("/static/font/Atkinson-Hyperlegible-Bold-102a.woff2") format("woff2");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  src:
+    url("/static/font/Atkinson-Hyperlegible-BoldItalic-102a.woff2") format("woff2");
+  font-weight: bold;
+  font-style: italic;
+}
+
+.custom-text a {
+  @apply underline text-cyan-400 dark:text-cyan-600
+}

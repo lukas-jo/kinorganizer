@@ -1,5 +1,5 @@
 {% for film in films %}
-<li data-id="{{film.tmdb_id}}" class="flex items-center gap-x-6 hover:bg-indigo-200 p-4">
+<li data-id="{{film.tmdb_id}}" class="flex items-center gap-x-6 hover:bg-base-50 dark:hover:bg-base-950 hover:cursor-pointer p-4">
   <img class="rounded-lg" src="https://image.tmdb.org/t/p/w92{{film.poster_path}}"></img>
     <div class="grid">
       <span class="font-semibold">{{film.title}}</span>
