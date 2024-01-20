@@ -17,11 +17,11 @@ RUN ./tailwindcss -i ./static/css/app.css -o ./static/css/style.css --minify
 
 FROM scratch
 WORKDIR /app
-COPY ./Rocket.toml .
 COPY ./templates ./templates
 COPY --from=build /app/target/release/jfk .
 COPY --from=build /app/static ./static
 EXPOSE 8000
-ENV ROCKET_ADDRESS=0.0.0.0
+ENV PORT=8000
+ENV HOST=0.0.0.0
 ENV DATABASE_URL=sqlite://jfk.sqlite?mode=rwc
 CMD ["./jfk"]

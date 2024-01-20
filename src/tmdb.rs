@@ -18,7 +18,7 @@ impl TmdbClient {
         }
     }
 
-    fn to_entity(&self, movie: MovieBase) -> film::ActiveModel {
+    fn to_entity(movie: MovieBase) -> film::ActiveModel {
         super::film::ActiveModel {
             title: Set(movie.title),
             tmdb_id: Set(movie.id.try_into().unwrap_or_default()),
@@ -29,8 +29,10 @@ impl TmdbClient {
     }
 
     pub async fn from_id(&self, id: i64) -> Result<film::ActiveModel, TmdbError> {
-        let film = MovieDetails::new(id.try_into().unwrap()).execute(&self.client).await?;
-        Ok(self.to_entity(film.inner))
+        let film = MovieDetails::new(id.try_into().unwrap())
+            .execute(&self.client)
+            .await?;
+        Ok(TmdbClient::to_entity(film.inner))
     }
 
     pub async fn search(&self, title: &str) -> Result<Vec<film::Model>, TmdbError> {
@@ -40,7 +42,7 @@ impl TmdbClient {
             .results
             .iter()
             .map(|f| f.inner.clone())
-            .map(|f| self.to_entity(f).try_into_model().unwrap())
+            .map(|f| TmdbClient::to_entity(f).try_into_model().unwrap())
             .collect())
     }
 }

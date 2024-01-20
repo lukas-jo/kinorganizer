@@ -1,13 +1,10 @@
 use sea_orm::entity::prelude::*;
-use rocket::serde::{Deserialize, Serialize};
-use rocket::form::FromForm;
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Deserialize, Serialize, FromForm)]
-#[serde(crate = "rocket::serde")]
+#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Deserialize, Serialize)]
 #[sea_orm(table_name = "film")]
 pub struct Model {
     #[sea_orm(primary_key)]
-    #[field(default = 0)]
     pub tmdb_id: i64,
     pub title: String,
     pub poster_path: String,

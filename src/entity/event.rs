@@ -1,13 +1,11 @@
 use sea_orm::entity::prelude::*;
-use rocket::serde::{Deserialize, Serialize};
-use rocket::form::FromForm;
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Deserialize, Serialize, FromForm)]
-#[serde(crate = "rocket::serde")]
+#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Deserialize, Serialize)]
 #[sea_orm(table_name = "event")]
 pub struct Model {
     #[sea_orm(primary_key)]
-    #[field(default = 0)]
+    #[serde(skip_deserializing)]
     pub id: i32,
     pub tmdb_id: i64,
     pub text: String,

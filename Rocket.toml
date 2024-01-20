@@ -1,2 +1,0 @@
-[default.databases.sea_orm]
-url = "sqlite://jfk.sqlite?mode=rwc"
